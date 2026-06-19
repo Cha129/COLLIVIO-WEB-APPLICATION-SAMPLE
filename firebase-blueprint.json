@@ -1,0 +1,256 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "Master authentication table mapping user account records.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "email": { "type": "string" },
+        "password_hash": { "type": "string" },
+        "role": { "type": "string", "enum": ["STUDENT", "ORGANIZATION", "ADMIN"] },
+        "status": { "type": "string", "enum": ["EMAIL_PENDING", "IDENTITY_PENDING", "REVIEW_PENDING", "ACTIVE", "SUSPENDED", "REJECTED"] },
+        "is_email_verified": { "type": "boolean" },
+        "last_login": { "type": "string", "format": "date-time" },
+        "created_at": { "type": "string", "format": "date-time" },
+        "updated_at": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "email", "password_hash", "role", "status"]
+    },
+    "StudentProfile": {
+      "title": "StudentProfile",
+      "description": "Information related to ambitious pre-college student portfolios.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "user_id": { "type": "string" },
+        "full_name": { "type": "string" },
+        "date_of_birth": { "type": "string", "format": "date" },
+        "country": { "type": "string" },
+        "school_name": { "type": "string" },
+        "grade": { "type": "string" },
+        "bio": { "type": "string" },
+        "skills": { "type": "array", "items": { "type": "string" } },
+        "interests": { "type": "array", "items": { "type": "string" } },
+        "research_interests": { "type": "string" },
+        "profile_picture": { "type": "string" },
+        "trust_score": { "type": "number" },
+        "profile_completion": { "type": "number" },
+        "created_at": { "type": "string", "format": "date-time" },
+        "updated_at": { "type": "string", "format": "date-time" }
+      },
+      "required": ["user_id", "full_name", "date_of_birth", "country", "school_name", "grade"]
+    },
+    "OrganizationProfile": {
+      "title": "OrganizationProfile",
+      "description": "Information mapping approved enterprises and labs sponsoring challenges.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "user_id": { "type": "string" },
+        "organization_name": { "type": "string" },
+        "industry": { "type": "string" },
+        "website": { "type": "string" },
+        "official_email": { "type": "string" },
+        "contact_person": { "type": "string" },
+        "country": { "type": "string" },
+        "description": { "type": "string" },
+        "logo_url": { "type": "string" },
+        "verification_badge": { "type": "string", "enum": ["none", "bronze", "silver", "gold", "platinum"] },
+        "trust_score": { "type": "number" },
+        "status": { "type": "string", "enum": ["EMAIL_PENDING", "REVIEW_PENDING", "ACTIVE", "REJECTED", "SUSPENDED"] },
+        "rejection_reason": { "type": "string" },
+        "created_at": { "type": "string", "format": "date-time" },
+        "updated_at": { "type": "string", "format": "date-time" }
+      },
+      "required": ["user_id", "organization_name", "industry", "official_email", "contact_person"]
+    },
+    "AdminProfile": {
+      "title": "AdminProfile",
+      "description": "Founders and core administrative team profiles.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "user_id": { "type": "string" },
+        "full_name": { "type": "string" },
+        "designation": { "type": "string" },
+        "profile_picture": { "type": "string" },
+        "permissions": { "type": "array", "items": { "type": "string" } },
+        "created_at": { "type": "string", "format": "date-time" }
+      },
+      "required": ["user_id", "full_name", "designation", "permissions"]
+    },
+    "VerificationDocument": {
+      "title": "VerificationDocument",
+      "description": "Proof of credentials, student compliance, or corporate standing.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "user_id": { "type": "string" },
+        "role": { "type": "string", "enum": ["student", "organization", "admin"] },
+        "document_type": { "type": "string", "enum": ["school_id", "student_certificate", "parent_consent", "registration_doc", "business_verification", "identity_proof", "experience_verification"] },
+        "file_url": { "type": "string" },
+        "file_name": { "type": "string" },
+        "status": { "type": "string", "enum": ["pending", "approved", "rejected"] },
+        "reviewer_notes": { "type": "string" },
+        "uploaded_at": { "type": "string", "format": "date-time" },
+        "reviewed_at": { "type": "string", "format": "date-time" }
+      },
+      "required": ["user_id", "role", "document_type", "file_url"]
+    },
+    "EmailVerificationToken": {
+      "title": "EmailVerificationToken",
+      "description": "Temporary keys dispatched to verify registrant inbox ownership.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "user_id": { "type": "string" },
+        "token": { "type": "string" },
+        "expires_at": { "type": "string", "format": "date-time" },
+        "created_at": { "type": "string", "format": "date-time" }
+      },
+      "required": ["user_id", "token", "expires_at"]
+    },
+    "PasswordResetToken": {
+      "title": "PasswordResetToken",
+      "description": "One-time session authentication codes for user pass reset tracks.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "user_id": { "type": "string" },
+        "token": { "type": "string" },
+        "expires_at": { "type": "string", "format": "date-time" },
+        "created_at": { "type": "string", "format": "date-time" }
+      },
+      "required": ["user_id", "token", "expires_at"]
+    },
+    "UserSession": {
+      "title": "UserSession",
+      "description": "Auditable interactive connection sessions linking active browser user agents.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "user_id": { "type": "string" },
+        "ip_address": { "type": "string" },
+        "device": { "type": "string" },
+        "browser": { "type": "string" },
+        "created_at": { "type": "string", "format": "date-time" },
+        "expires_at": { "type": "string", "format": "date-time" }
+      },
+      "required": ["user_id", "created_at", "expires_at"]
+    },
+    "AuditLog": {
+      "title": "AuditLog",
+      "description": "Security events track storing actions matching security criteria.",
+      "type": "object",
+      "properties": {
+        "actor_id": { "type": "string" },
+        "action": { "type": "string", "enum": ["user_approved", "user_rejected", "user_suspended", "documents_requested", "status_changed", "profile_updated"] },
+        "target_user_id": { "type": "string" },
+        "target_role": { "type": "string" },
+        "details": { "type": "string" },
+        "timestamp": { "type": "string", "format": "date-time" }
+      },
+      "required": ["actor_id", "action", "target_user_id"]
+    },
+    "OrgVerificationResult": {
+      "title": "OrgVerificationResult",
+      "description": "OCR matching results generated during automated verification checks.",
+      "type": "object",
+      "properties": {
+        "user_id": { "type": "string" },
+        "organization_name": { "type": "string" },
+        "document_type": { "type": "string" },
+        "file_url": { "type": "string" },
+        "official_email": { "type": "string" },
+        "website": { "type": "string" },
+        "country": { "type": "string" },
+        "org_type": { "type": "string" },
+        "ocr_data": { "type": "object" },
+        "name_match_score": { "type": "number" },
+        "document_authenticity_score": { "type": "number" },
+        "email_trust_score": { "type": "number" },
+        "website_trust_score": { "type": "number" },
+        "digital_presence_score": { "type": "number" },
+        "fraud_risk_score": { "type": "number" },
+        "trust_score": { "type": "number" },
+        "verified_badge": { "type": "string", "enum": ["none", "bronze", "silver", "gold", "platinum"] },
+        "ai_decision": { "type": "string", "enum": ["AUTO_APPROVED", "MANUAL_REVIEW", "REJECTED"] },
+        "ai_explanation": { "type": "string" },
+        "flags": { "type": "array", "items": { "type": "string" } },
+        "org_preferences": { "type": "object" },
+        "status": { "type": "string", "enum": ["processing", "completed", "failed"] }
+      },
+      "required": ["user_id", "organization_name", "document_type", "file_url", "official_email"]
+    },
+    "VerificationResult": {
+      "title": "VerificationResult",
+      "description": "High-assurance automated school enrollment/ID OCR checks.",
+      "type": "object",
+      "properties": {
+        "user_id": { "type": "string" },
+        "document_type": { "type": "string" },
+        "file_url": { "type": "string" },
+        "ocr_data": { "type": "object" },
+        "authenticity_score": { "type": "number" },
+        "identity_match_score": { "type": "number" },
+        "institution_confidence": { "type": "number" },
+        "risk_score": { "type": "number" },
+        "age_valid": { "type": "boolean" },
+        "calculated_age": { "type": "number" },
+        "ai_decision": { "type": "string", "enum": ["AUTO_APPROVED", "MANUAL_REVIEW", "REJECTED"] },
+        "ai_explanation": { "type": "string" },
+        "flags": { "type": "array", "items": { "type": "string" } },
+        "student_preferences": { "type": "object" },
+        "status": { "type": "string", "enum": ["processing", "completed", "failed"] }
+      },
+      "required": ["user_id", "document_type", "file_url"]
+    }
+  },
+  "firestore": {
+    "users": {
+      "schema": { "$ref": "#/entities/User" },
+      "description": "Master user collection"
+    },
+    "student_profiles": {
+      "schema": { "$ref": "#/entities/StudentProfile" },
+      "description": "Ambitious scholars details collection"
+    },
+    "organization_profiles": {
+      "schema": { "$ref": "#/entities/OrganizationProfile" },
+      "description": "Registered partners information collection"
+    },
+    "admin_profiles": {
+      "schema": { "$ref": "#/entities/AdminProfile" },
+      "description": "Administrative founders profiles mapping"
+    },
+    "verification_documents": {
+      "schema": { "$ref": "#/entities/VerificationDocument" },
+      "description": "Document proofs storage"
+    },
+    "email_verification_tokens": {
+      "schema": { "$ref": "#/entities/EmailVerificationToken" },
+      "description": "Pending registrations confirm key store"
+    },
+    "password_reset_tokens": {
+      "schema": { "$ref": "#/entities/PasswordResetToken" },
+      "description": "Pass changes token locks"
+    },
+    "user_sessions": {
+      "schema": { "$ref": "#/entities/UserSession" },
+      "description": "Auditable session tracking store"
+    },
+    "audit_logs": {
+      "schema": { "$ref": "#/entities/AuditLog" },
+      "description": "System event audit trail records"
+    },
+    "org_verification_results": {
+      "schema": { "$ref": "#/entities/OrgVerificationResult" },
+      "description": "OCR outcomes of organization docs"
+    },
+    "student_verification_results": {
+      "schema": { "$ref": "#/entities/VerificationResult" },
+      "description": "OCR outcomes of student records"
+    }
+  }
+}

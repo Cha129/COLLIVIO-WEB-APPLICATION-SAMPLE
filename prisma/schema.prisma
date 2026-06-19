@@ -1,0 +1,269 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// ── ENUMS ──
+
+enum Role {
+  STUDENT
+  ORGANIZATION
+  ADMIN
+}
+
+enum Status {
+  EMAIL_PENDING
+  IDENTITY_PENDING
+  REVIEW_PENDING
+  ACTIVE
+  SUSPENDED
+  REJECTED
+}
+
+enum DocType {
+  school_id
+  student_certificate
+  parent_consent
+  registration_doc
+  business_verification
+  identity_proof
+  experience_verification
+}
+
+enum DocStatus {
+  pending
+  approved
+  rejected
+}
+
+enum BadgeType {
+  none
+  bronze
+  silver
+  gold
+  platinum
+}
+
+enum DecisionType {
+  AUTO_APPROVED
+  MANUAL_REVIEW
+  REJECTED
+}
+
+enum ProcessStatus {
+  processing
+  completed
+  failed
+}
+
+enum AuditAction {
+  user_approved
+  user_rejected
+  user_suspended
+  documents_requested
+  status_changed
+  profile_updated
+}
+
+// ── TABLES ──
+
+model User {
+  id                String    @id @default(uuid()) @db.Uuid
+  email             String    @unique
+  passwordHash      String    @map("password_hash")
+  role              Role
+  status            Status    @default(EMAIL_PENDING)
+  isEmailVerified   Boolean   @default(false) @map("is_email_verified")
+  lastLogin         DateTime? @map("last_login")
+  createdAt         DateTime  @default(now()) @map("created_at")
+  updatedAt         DateTime  @updatedAt @map("updated_at")
+
+  // Relationships
+  studentProfile       StudentProfile?
+  organizationProfile  OrganizationProfile?
+  verificationDocs     VerificationDocument[]
+  verificationTokens   EmailVerificationToken[]
+  resetTokens          PasswordResetToken[]
+  sessions             UserSession[]
+  auditLogs            AuditLog[]             @relation("UserAudited")
+  actorLogs            AuditLog[]             @relation("ActorAudited")
+  orgVerResults        OrgVerificationResult[]
+  studVerResults       VerificationResult[]
+
+  @@map("users")
+}
+
+model StudentProfile {
+  id                String   @id @default(uuid()) @db.Uuid
+  userId            String   @unique @map("user_id") @db.Uuid
+  fullName          String   @map("full_name")
+  dateOfBirth       DateTime @map("date_of_birth") @db.Date
+  country           String
+  schoolName        String   @map("school_name")
+  grade             String
+  bio               String?  @db.Text
+  skills            String[] // In PostgreSQL, Scalar List
+  interests         String[] // In PostgreSQL, Scalar List
+  researchInterests String?  @map("research_interests") @db.Text
+  profilePicture    String?  @map("profile_picture")
+  trustScore        Int      @default(70) @map("trust_score")
+  profileCompletion Int      @default(0) @map("profile_completion")
+  createdAt         DateTime @default(now()) @map("created_at")
+  updatedAt         DateTime @updatedAt @map("updated_at")
+
+  // Relationships
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("student_profiles")
+}
+
+model OrganizationProfile {
+  id                String    @id @default(uuid()) @db.Uuid
+  userId            String    @unique @map("user_id") @db.Uuid
+  organizationName  String    @map("organization_name")
+  industry          String
+  website           String
+  country           String
+  description       String?   @db.Text
+  logo              String?
+  verificationBadge BadgeType @default(none) @map("verification_badge")
+  trustScore        Int       @default(75) @map("trust_score")
+  createdAt         DateTime  @default(now()) @map("created_at")
+  updatedAt         DateTime  @updatedAt @map("updated_at")
+
+  // Relationships
+  user              User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("organization_profiles")
+}
+
+model VerificationDocument {
+  id                 String    @id @default(uuid()) @db.Uuid
+  userId             String    @map("user_id") @db.Uuid
+  documentType       DocType   @map("document_type")
+  documentUrl        String    @map("document_url")
+  verificationStatus DocStatus @default(pending) @map("verification_status")
+  uploadedAt         DateTime  @default(now()) @map("uploaded_at")
+  reviewedAt         DateTime? @map("reviewed_at")
+
+  // Relationships
+  user               User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("verification_documents")
+}
+
+model EmailVerificationToken {
+  id        String   @id @default(uuid()) @db.Uuid
+  userId    String   @map("user_id") @db.Uuid
+  token     String   @unique
+  expiresAt DateTime @map("expires_at")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  // Relationships
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("email_verification_tokens")
+}
+
+model PasswordResetToken {
+  id        String   @id @default(uuid()) @db.Uuid
+  userId    String   @map("user_id") @db.Uuid
+  token     String   @unique
+  expiresAt DateTime @map("expires_at")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  // Relationships
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("password_reset_tokens")
+}
+
+model UserSession {
+  id        String    @id @default(uuid()) @db.Uuid
+  userId    String    @map("user_id") @db.Uuid
+  ipAddress String?   @map("ip_address")
+  device    String?
+  browser   String?
+  createdAt DateTime  @default(now()) @map("created_at")
+  expiresAt DateTime  @map("expires_at")
+
+  // Relationships
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("user_sessions")
+}
+
+model AuditLog {
+  id           String      @id @default(uuid()) @db.Uuid
+  actorId      String      @map("actor_id") @db.Uuid
+  action       AuditAction
+  targetUserId String      @map("target_user_id") @db.Uuid
+  targetRole   Role?       @map("target_role")
+  details      String      @db.Text
+  timestamp    DateTime    @default(now())
+
+  // Relationships
+  actor        User        @relation("ActorAudited", fields: [actorId], references: [id], onDelete: Cascade)
+  targetUser   User        @relation("UserAudited", fields: [targetUserId], references: [id], onDelete: Cascade)
+
+  @@map("audit_logs")
+}
+
+model OrgVerificationResult {
+  id                        String        @id @default(uuid()) @db.Uuid
+  userId                    String        @map("user_id") @db.Uuid
+  organizationName          String        @map("organization_name")
+  documentType              String        @map("document_type")
+  fileUrl                   String        @map("file_url")
+  officialEmail             String        @map("official_email")
+  website                   String?
+  country                   String?
+  orgType                   String?       @map("org_type")
+  ocrData                   Json?         @map("ocr_data") // Stored as raw json object
+  nameMatchScore            Float?        @map("name_match_score")
+  documentAuthenticityScore Float?        @map("document_authenticity_score")
+  emailTrustScore           Float?        @map("email_trust_score")
+  websiteTrustScore         Float?        @map("website_trust_score")
+  digitalPresenceScore      Float?        @map("digital_presence_score")
+  fraudRiskScore            Float?        @map("fraud_risk_score")
+  trustScore                Float         @map("trust_score")
+  verifiedBadge             BadgeType     @default(none) @map("verified_badge")
+  aiDecision                DecisionType  @default(MANUAL_REVIEW) @map("ai_decision")
+  aiExplanation             String?       @map("ai_explanation") @db.Text
+  flags                     String[]      @map("flags")
+  orgPreferences            Json?         @map("org_preferences")
+  status                    ProcessStatus @default(processing)
+
+  // Relationships
+  user                      User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("org_verification_results")
+}
+
+model VerificationResult {
+  id                    String        @id @default(uuid()) @db.Uuid
+  userId                String        @map("user_id") @db.Uuid
+  documentType          String        @map("document_type")
+  fileUrl               String        @map("file_url")
+  ocrData               Json?         @map("ocr_data")
+  authenticityScore     Float?        @map("authenticity_score")
+  identityMatchScore    Float?        @map("identity_match_score")
+  institutionConfidence Float?        @map("institution_confidence")
+  riskScore             Float?        @map("risk_score")
+  ageValid              Boolean?      @map("age_valid")
+  calculatedAge         Float?        @map("calculated_age")
+  aiDecision            DecisionType  @default(MANUAL_REVIEW) @map("ai_decision")
+  aiExplanation         String?       @map("ai_explanation") @db.Text
+  flags                 String[]      @map("flags")
+  studentPreferences    Json?         @map("student_preferences")
+  status                ProcessStatus @default(processing)
+
+  // Relationships
+  user                  User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("student_verification_results")
+}

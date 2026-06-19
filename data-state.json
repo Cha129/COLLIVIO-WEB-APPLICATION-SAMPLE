@@ -1,0 +1,496 @@
+{
+  "profile": {
+    "fullName": "Alex Rivera",
+    "email": "alex.rivera@stanford.edu",
+    "role": "student",
+    "major": "Computer Science",
+    "university": "Stanford University",
+    "profileCompletion": 85,
+    "missingItems": [
+      {
+        "id": 1,
+        "text": "Add Project Portfolio",
+        "checked": true
+      },
+      {
+        "id": 2,
+        "text": "Verify Skills",
+        "checked": true
+      },
+      {
+        "id": 3,
+        "text": "Add Project Course",
+        "checked": false
+      },
+      {
+        "id": 4,
+        "text": "Verifying Seines",
+        "checked": false
+      },
+      {
+        "id": 5,
+        "text": "Add Pestition",
+        "checked": false
+      }
+    ],
+    "avatarUrl": "",
+    "bio": "Ambitious and creative undergraduate software engineering student focused on building products that bridge human intelligence and AI pipelines."
+  },
+  "certifications": [],
+  "activityFeed": [
+    {
+      "id": "feed-1",
+      "text": "Organization Verification Approved for TechCorp.",
+      "time": "2 hours ago",
+      "type": "verification"
+    },
+    {
+      "id": "feed-2",
+      "text": "New Research Project 'Synaptic Latency Modeling' created by Alex Rivera.",
+      "time": "1 day ago",
+      "type": "project"
+    },
+    {
+      "id": "feed-3",
+      "text": "Student Alex Rivera applied for Machine Learning Intern.",
+      "time": "2 days ago",
+      "type": "application"
+    },
+    {
+      "id": "feed-4",
+      "text": "New Organization Joined: 'Google DeepMind'.",
+      "time": "3 days ago",
+      "type": "organization"
+    }
+  ],
+  "internshipMatches": [],
+  "deadlines": [
+    {
+      "id": "dl-1",
+      "date": "Oct 20",
+      "label": "Research Paper Submission"
+    },
+    {
+      "id": "dl-2",
+      "date": "Oct 25",
+      "label": "Internship Application due"
+    },
+    {
+      "id": "dl-3",
+      "date": "Nov 1",
+      "label": "Certification Exam"
+    }
+  ],
+  "adminFeedback": [],
+  "platformUpdates": [
+    "Verification Approved",
+    "New Organization Joined",
+    "Research Project Featured",
+    "New Opportunity Published"
+  ],
+  "aiRecommendations": [],
+  "skillsGrowth": [
+    {
+      "month": "Jan",
+      "progress": 10
+    },
+    {
+      "month": "Feb",
+      "progress": 28
+    },
+    {
+      "month": "Mar",
+      "progress": 42
+    },
+    {
+      "month": "Jul",
+      "progress": 55
+    },
+    {
+      "month": "Sep",
+      "progress": 71
+    },
+    {
+      "month": "Aug",
+      "progress": 85
+    }
+  ],
+  "milestones": [
+    {
+      "name": "Q3 Launch",
+      "date": "Oct 31",
+      "status": "completed"
+    },
+    {
+      "name": "Beta Testing",
+      "date": "Nov 15",
+      "status": "active"
+    },
+    {
+      "name": "Final Release",
+      "date": "Dec 1",
+      "status": "upcoming"
+    }
+  ],
+  "kanbanColumns": {
+    "todo": [
+      {
+        "id": "task-1",
+        "title": "Define Q3 Marketing Strategy",
+        "due": "Oct 15",
+        "progress": 0,
+        "listType": "wool",
+        "commentsCount": 2,
+        "filesCount": 1,
+        "avatarInitials": [
+          "AM",
+          "SK"
+        ]
+      }
+    ],
+    "inProgress": [
+      {
+        "id": "task-2",
+        "title": "Website Redesign - Phase 1",
+        "due": "Oct 22",
+        "progress": 65,
+        "listType": "caramel",
+        "commentsCount": 12,
+        "subtasks": "4/6 subtasks completed",
+        "attachments": [
+          "Wireframes_v3.pdf"
+        ],
+        "avatarInitials": [
+          "AM",
+          "SK",
+          "DR"
+        ]
+      },
+      {
+        "id": "task-3",
+        "title": "Content Creation for Blog",
+        "due": "Nov 5",
+        "progress": 30,
+        "listType": "wool",
+        "commentsCount": 0,
+        "avatarInitials": [
+          "DR"
+        ]
+      }
+    ],
+    "done": [
+      {
+        "id": "task-4",
+        "title": "Appointed New Vendor",
+        "progress": 100,
+        "commentsCount": 0,
+        "checked": true
+      },
+      {
+        "id": "task-5",
+        "title": "Published Q2 Report",
+        "progress": 100,
+        "commentsCount": 0,
+        "checked": true,
+        "isSpecial": true
+      }
+    ]
+  },
+  "teamChat": [
+    {
+      "id": "chat-1",
+      "sender": "Alex Rivera",
+      "text": "@team, great progress on the website redesign! Let's sync tomorrow at 10 AM.",
+      "time": "10:15 AM",
+      "isMe": true
+    },
+    {
+      "id": "chat-2",
+      "sender": "Sarah K.",
+      "text": "Attached the latest homepage mocks for review. Rfeedback.",
+      "time": "10:22 AM",
+      "isMe": false,
+      "fileAttachment": "Wireframes_v3.pdf"
+    }
+  ],
+  "researchHub": {
+    "domains": [
+      {
+        "name": "Artificial Intelligence",
+        "count": 12
+      },
+      {
+        "name": "Biotechnology",
+        "count": 8
+      },
+      {
+        "name": "Quantum Computing",
+        "count": 5
+      },
+      {
+        "name": "Sustainable Energy",
+        "count": 9
+      },
+      {
+        "name": "Space Exploration",
+        "count": 4
+      }
+    ],
+    "projects": [],
+    "assistantChatHistory": [
+      {
+        "sender": "assistant",
+        "text": "How can I assist with your research today? You can query me on neural maps, collaborator matches, or text summaries."
+      }
+    ],
+    "suggestions": [
+      {
+        "id": "sug-1",
+        "name": "Name Smifkr",
+        "expertise": "Expertise, expertise",
+        "role": "Neuroengineer"
+      },
+      {
+        "id": "sug-2",
+        "name": "Jaran Dannen",
+        "expertise": "Expertise, expertise",
+        "role": "AI Ethicist"
+      }
+    ]
+  },
+  "mediaLab": {
+    "categories": [
+      "Trending",
+      "Featured",
+      "Projects",
+      "Categories",
+      "About"
+    ],
+    "featured": [
+      {
+        "id": "ml-1",
+        "title": "Architectural Design & Space Optimizers",
+        "desc": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+        "likes": "1.2k",
+        "comments": "450",
+        "type": "design"
+      },
+      {
+        "id": "ml-2",
+        "title": "Fashion App UI and Design Language Selection",
+        "desc": "Interactive mockups showcasing fluid typography paired with editorial-focused Wool & Caramel accents.",
+        "likes": "982",
+        "comments": "310",
+        "type": "app"
+      },
+      {
+        "id": "ml-3",
+        "title": "Product Design: Glassmorphic Coffee Machine",
+        "desc": "A stunning showcase of material physics rendering on glass panels in high-fidelity computer designs.",
+        "likes": "1.4k",
+        "comments": "518",
+        "type": "product"
+      }
+    ],
+    "userUploads": []
+  },
+  "skillRoadmap": {
+    "careerPath": "Full Stack Developer",
+    "nodes": [
+      {
+        "id": "node-1",
+        "label": "Home Base",
+        "completed": true,
+        "type": "base"
+      },
+      {
+        "id": "node-2",
+        "label": "UX Theory",
+        "completed": true,
+        "type": "theory"
+      },
+      {
+        "id": "node-3",
+        "label": "React Mastery",
+        "completed": true,
+        "type": "react"
+      },
+      {
+        "id": "node-4",
+        "label": "Backend API Setup",
+        "completed": false,
+        "type": "backend"
+      },
+      {
+        "id": "node-5",
+        "label": "Scalable Databases",
+        "completed": false,
+        "type": "database"
+      },
+      {
+        "id": "node-6",
+        "label": "AI Integration Pipeline",
+        "completed": false,
+        "type": "ai"
+      }
+    ],
+    "modules": [
+      {
+        "id": "mod-1",
+        "name": "Advanced React Patterns",
+        "pathTheme": "Wool",
+        "progress": 100
+      },
+      {
+        "id": "mod-2",
+        "name": "System Design Principles",
+        "pathTheme": "Wool",
+        "progress": 45
+      },
+      {
+        "id": "mod-3",
+        "name": "Commered & Principles",
+        "pathTheme": "Wool",
+        "progress": 10
+      }
+    ],
+    "tasks": [
+      {
+        "id": "t-1",
+        "text": "Complete structured state management tutorial.",
+        "due": "Sep 23",
+        "status": "idle"
+      },
+      {
+        "id": "t-2",
+        "text": "Draft architecture layout diagrams for project submission.",
+        "due": "Sep 25",
+        "status": "idle"
+      },
+      {
+        "id": "t-3",
+        "text": "Optimize database indexes on mock PG endpoints.",
+        "due": "Sep 28",
+        "status": "idle"
+      }
+    ]
+  },
+  "users": [
+    {
+      "id": "user-student-1",
+      "email": "alex.rivera@stanford.edu",
+      "passwordHash": "sha256_e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "role": "student",
+      "status": "ACTIVE",
+      "created_at": "2026-06-10T12:37:59.954Z"
+    },
+    {
+      "id": "user-org-1",
+      "email": "sponsor@techcorp.com",
+      "passwordHash": "sha256_e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "role": "organization",
+      "status": "ACTIVE",
+      "created_at": "2026-06-10T12:37:59.954Z"
+    },
+    {
+      "id": "user-admin-1",
+      "email": "admin1@collivio.com",
+      "passwordHash": "sha256_e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "role": "admin",
+      "status": "ACTIVE",
+      "created_at": "2026-06-10T12:37:59.954Z"
+    },
+    {
+      "id": "user-admin-2",
+      "email": "admin2@collivio.com",
+      "passwordHash": "sha256_e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "role": "admin",
+      "status": "ACTIVE",
+      "created_at": "2026-06-10T12:37:59.954Z"
+    },
+    {
+      "id": "user-admin-3",
+      "email": "admin3@collivio.com",
+      "passwordHash": "sha256_e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "role": "admin",
+      "status": "ACTIVE",
+      "created_at": "2026-06-10T12:37:59.954Z"
+    },
+    {
+      "id": "user-admin-4",
+      "email": "admin4@collivio.com",
+      "passwordHash": "sha256_e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "role": "admin",
+      "status": "ACTIVE",
+      "created_at": "2026-06-10T12:37:59.954Z"
+    }
+  ],
+  "student_profiles": {
+    "user-student-1": {
+      "user_id": "user-student-1",
+      "full_name": "Alex Rivera",
+      "dob": "2008-01-12",
+      "school_name": "Stanford University Prep",
+      "grade": "Grade 12",
+      "skills": [
+        "Python",
+        "Machine Learning",
+        "React",
+        "SQL"
+      ],
+      "interests": [
+        "Machine Learning",
+        "Software Engineering",
+        "Product Design"
+      ],
+      "trust_score": 99,
+      "portfolio_url": "https://alexrivera.dev",
+      "github": "github.com/alexrivera",
+      "linkedin": "linkedin.com/in/alex-rivera",
+      "research_interests": "Brain Computer Interfaces, Neural Network Topologies"
+    }
+  },
+  "organization_profiles": {
+    "user-org-1": {
+      "user_id": "user-org-1",
+      "organization_name": "TechCorp",
+      "industry": "Software & AI Solutions",
+      "website": "techcorp.com",
+      "description": "Building next generation developer tools & machine learning pipeline optimization frameworks.",
+      "contact_person": "Sarah K.",
+      "country": "United States",
+      "trust_score": 98
+    }
+  },
+  "verification_documents": [
+    {
+      "id": "doc-seed-1",
+      "user_id": "user-student-1",
+      "document_type": "School ID Card",
+      "document_url": "mock_school_id.png",
+      "verification_status": "VERIFIED"
+    }
+  ],
+  "audit_logs": [
+    {
+      "id": "log-seed-1",
+      "timestamp": "2026-06-10T11:37:51.190Z",
+      "event": "System Initialized with Pre-College Security standards",
+      "type": "system"
+    },
+    {
+      "id": "log-seed-2",
+      "timestamp": "2026-06-10T11:52:51.191Z",
+      "event": "Seed student profile for Alex Rivera loaded",
+      "type": "auth",
+      "userId": "user-student-1"
+    },
+    {
+      "id": "log-seed-3",
+      "timestamp": "2026-06-10T12:07:51.191Z",
+      "event": "Seed organization profile for TechCorp loaded",
+      "type": "auth",
+      "userId": "user-org-1"
+    }
+  ]
+}

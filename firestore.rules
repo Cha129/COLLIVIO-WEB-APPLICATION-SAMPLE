@@ -1,0 +1,164 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ── GLOBAL SAFETY NET (DEFAULT-DENY) ──
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // ── GLOBAL HELPER FUNCTIONS ──
+    
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isEmailVerified() {
+      return isSignedIn() && request.auth.token.email_verified == true;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    // Check if the current user profile has ADMIN role (look up from users collection)
+    function isAdmin() {
+      return isSignedIn() && 
+        exists(/databases/$(database)/documents/users/$(request.auth.uid)) && 
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == "ADMIN";
+    }
+
+    // ── ENTITY SCHEMAS & VALIDATORS ──
+
+    function isValidUser(data) {
+      return data.email is string && data.email.size() <= 256 &&
+        data.role is string && (data.role == "STUDENT" || data.role == "ORGANIZATION" || data.role == "ADMIN") &&
+        data.status is string && (data.status == "EMAIL_PENDING" || data.status == "IDENTITY_PENDING" || data.status == "REVIEW_PENDING" || data.status == "ACTIVE" || data.status == "SUSPENDED" || data.status == "REJECTED") &&
+        data.password_hash is string && data.password_hash.size() <= 512;
+    }
+
+    function isValidStudentProfile(data) {
+      return data.user_id is string && data.user_id.size() <= 128 &&
+        data.full_name is string && data.full_name.size() <= 128 &&
+        data.date_of_birth is string && data.date_of_birth.size() <= 10 &&
+        data.country is string && data.country.size() <= 64 &&
+        data.school_name is string && data.school_name.size() <= 128 &&
+        data.grade is string && data.grade.size() <= 32;
+    }
+
+    function isValidOrgProfile(data) {
+      return data.user_id is string && data.user_id.size() <= 128 &&
+        data.organization_name is string && data.organization_name.size() <= 128 &&
+        data.industry is string && data.industry.size() <= 64 &&
+        data.official_email is string && data.official_email.size() <= 256 &&
+        data.contact_person is string && data.contact_person.size() <= 128;
+    }
+
+    function isValidAdminProfile(data) {
+      return data.user_id is string && data.user_id.size() <= 128 &&
+        data.full_name is string && data.full_name.size() <= 128 &&
+        data.designation is string && data.designation.size() <= 128;
+    }
+
+    function isValidVerificationDoc(data) {
+      return data.user_id is string && data.user_id.size() <= 128 &&
+        data.role is string && (data.role == "student" || data.role == "organization" || data.role == "admin") &&
+        data.document_type is string && (data.document_type == "school_id" || data.document_type == "student_certificate" || data.document_type == "parent_consent" || data.document_type == "registration_doc" || data.document_type == "business_verification" || data.document_type == "identity_proof" || data.document_type == "experience_verification") &&
+        data.file_url is string && data.file_url.size() <= 1024;
+    }
+
+    function isValidUserSession(data) {
+      return data.user_id is string && data.user_id.size() <= 128;
+    }
+
+    function isValidAuditLog(data) {
+      return data.actor_id is string && data.actor_id.size() <= 128 &&
+        data.target_user_id is string && data.target_user_id.size() <= 128 &&
+        data.action is string && (data.action == "user_approved" || data.action == "user_rejected" || data.action == "user_suspended" || data.action == "documents_requested" || data.action == "status_changed" || data.profile == "profile_updated");
+    }
+
+    // ── SECURITY RULES FOR COLLECTIONS ──
+
+    match /users/{userId} {
+      allow read: if isOwner(userId) || isAdmin();
+      allow create: if isSignedIn() && isValidId(userId) && isOwner(userId) && isValidUser(incoming());
+      allow update: if (isOwner(userId) || isAdmin()) && isValidUser(incoming()) && 
+        incoming().role == existing().role; // Roles are immutable
+      allow delete: if isAdmin();
+    }
+
+    match /student_profiles/{profileId} {
+      allow read: if isSignedIn(); // Other users can see student portfolios
+      allow create: if isSignedIn() && isValidId(profileId) && isOwner(incoming().user_id) && isValidStudentProfile(incoming());
+      allow update: if (isOwner(existing().user_id) || isAdmin()) && isValidStudentProfile(incoming()) &&
+        incoming().user_id == existing().user_id; // user_id mapping is immutable
+      allow delete: if isAdmin();
+    }
+
+    match /organization_profiles/{profileId} {
+      allow read: if isSignedIn(); 
+      allow create: if isSignedIn() && isValidId(profileId) && isOwner(incoming().user_id) && isValidOrgProfile(incoming());
+      allow update: if (isOwner(existing().user_id) || isAdmin()) && isValidOrgProfile(incoming()) &&
+        incoming().user_id == existing().user_id;
+      allow delete: if isAdmin();
+    }
+
+    match /admin_profiles/{profileId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn() && isValidId(profileId) && isOwner(incoming().user_id) && isValidAdminProfile(incoming());
+      allow update: if (isOwner(existing().user_id) || isAdmin()) && isValidAdminProfile(incoming()) &&
+        incoming().user_id == existing().user_id;
+      allow delete: if isAdmin();
+    }
+
+    match /verification_documents/{docId} {
+      allow read: if isSignedIn() && (isOwner(resource.data.user_id) || isAdmin());
+      allow create: if isSignedIn() && isValidId(docId) && isOwner(incoming().user_id) && isValidVerificationDoc(incoming());
+      allow update: if isAdmin(); // Only admins can verify or review docs
+      allow delete: if isOwner(resource.data.user_id) || isAdmin();
+    }
+
+    match /user_sessions/{sessionId} {
+      allow read: if isSignedIn() && (isOwner(resource.data.user_id) || isAdmin());
+      allow create: if isSignedIn() && isValidId(sessionId) && isOwner(incoming().user_id) && isValidUserSession(incoming());
+      allow update: if isSignedIn() && isOwner(existing().user_id) && isValidUserSession(incoming());
+      allow delete: if isSignedIn() && isOwner(resource.data.user_id);
+    }
+
+    match /audit_logs/{logId} {
+      allow read: if isAdmin();
+      allow create: if isSignedIn() && isValidId(logId) && isValidAuditLog(incoming());
+      allow update, delete: if false; // Audit logs are immutable and permanent
+    }
+
+    match /email_verification_tokens/{tokenId} {
+      allow read, write: if isAdmin(); // Server-side verification tokens
+    }
+
+    match /password_reset_tokens/{tokenId} {
+      allow read, write: if isAdmin(); // Server-side only reset tokens
+    }
+
+    match /org_verification_results/{resultId} {
+      allow read: if isSignedIn() && (isOwner(resource.data.user_id) || isAdmin());
+      allow write: if isAdmin(); // Systems/Admins write verification outcomes
+    }
+
+    match /student_verification_results/{resultId} {
+      allow read: if isSignedIn() && (isOwner(resource.data.user_id) || isAdmin());
+      allow write: if isAdmin();
+    }
+  }
+}

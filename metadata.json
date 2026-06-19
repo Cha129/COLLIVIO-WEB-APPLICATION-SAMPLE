@@ -1,0 +1,6 @@
+{
+  "name": "Collivio",
+  "description": "Premium micro-internships, startup collaborations, research groups, and custom portfolio tracks for ambitious pre-college students.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

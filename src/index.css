@@ -1,0 +1,81 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Playfair Display", Georgia, serif;
+  --font-accent: "Inter", sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+  --font-stats: "Space Grotesk", sans-serif;
+  
+  /* Brand Specific Theme Definitions (Light Luxury Academic Palette) */
+  --color-wool: #3A241E; /* High contrast dark brown heading text color of academic premium ink */
+  --color-caramel: #8D695D; /* Secondary brand color (warm chestnut-caramel) */
+  --color-chestnut: #603A30; /* Updated rich chestnut brown */
+  --color-red-wine: #741717; /* Primary brand color (classic wine red) */
+  --color-dark-fire: #F7F4F2; /* Primary off-white warm background */
+  --color-warm-border: #E8E0DC; /* Clean warm borders */
+  --color-accent-wool: #C4BAB3; /* Light wool accent tone */
+
+  /* Backward Compatibility Mapping for Existing Components to ensure they look stunning instantly on light theme */
+  --color-burgundy-950: #F7F4F2; /* Deep background transforms to off-white primary */
+  --color-burgundy-900: #FFFFFF; /* Dark panels transform to pure white card surfaces */
+  --color-burgundy-850: #FFFFFF;
+  --color-burgundy-800: #FFFFFF;
+  --color-burgundy-700: #E8E0DC; /* Borders */
+  --color-burgundy-600: #7A6B65; /* Muted text and accent */
+  --color-burgundy-500: #741717; /* Primary Brand Red */
+  --color-burgundy-400: #8D695D; /* Caramel Brand Orange-Brown */
+  --color-wine-red: #741717;
+  --color-wine-red-light: #8E2323;
+  --color-caramel-500: #8D695D;
+  --color-caramel-400: #8D695D;
+  --color-caramel-300: #7A6B65;
+  --color-wool-100: #3A241E; /* Primary dark heading color */
+  --color-wool-200: #5C4B45; /* Body text color */
+  --color-wool-300: #7A6B65; /* Lighter muted text */
+}
+
+/* Custom glassmorphic styles for beautiful overlays matching brand palette */
+.glass-panel {
+  background: #FFFFFF;
+  border: 1px solid #E8E0DC;
+  box-shadow: 0 10px 30px rgba(96, 58, 48, 0.08);
+}
+
+.glass-panel-light {
+  background: #FFFFFF;
+  border: 1px solid #E8E0DC;
+  box-shadow: 0 10px 30px rgba(96, 58, 48, 0.08);
+}
+
+.glass-button {
+  background: #FFFFFF;
+  border: 1px solid #E8E0DC;
+  color: #741717;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.glass-button:hover {
+  background: #741717;
+  color: #FFFFFF;
+  border-color: #741717;
+  transform: translateY(-1.5px);
+  box-shadow: 0 4px 12px rgba(116, 23, 23, 0.15);
+}
+
+.canvas-bg {
+  /* Soft academic wool and pure paint gradient */
+  background: linear-gradient(135deg, #F7F4F2 0%, #FFFFFF 50%, #E7DDD7 100%);
+}
+
+/* Luxury card hover rise dynamics on desktop */
+.hover-rise {
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
+}
+.hover-rise:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 14px 40px rgba(141, 105, 93, 0.08);
+}
+
