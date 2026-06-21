@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 import { motion, useMotionValue, useSpring, useTransform, AnimatePresence } from "motion/react";
 import { CollivioLogo } from "../components/CollivioLogo";
+import { VerifiedBadge } from "../components/verification/VerifiedBadge";
 
 interface LandingProps {
   onNavigate: (view: string, subView?: string) => void;
@@ -68,7 +69,10 @@ export const Landing: React.FC<LandingProps> = ({ onNavigate }) => {
               <div className="w-5 h-5 rounded-full bg-[#741717]/10 flex items-center justify-center text-[10px] text-[#741717] font-bold">✓</div>
               <span className="text-[10px] font-bold text-chestnut">Alex Rivera</span>
             </div>
-            <p className="text-[8px] text-[#594440] leading-none mb-1">Pre-College Verified Scholar</p>
+            <p className="text-[8px] text-[#594440] leading-none mb-1.5">Pre-College Verified Scholar</p>
+            <div className="mb-2">
+              <VerifiedBadge type="student" className="scale-80 origin-left" />
+            </div>
             <span className="text-[7px] text-caramel uppercase tracking-wider font-mono font-bold">Trust Score: 99</span>
           </motion.div>
         </div>

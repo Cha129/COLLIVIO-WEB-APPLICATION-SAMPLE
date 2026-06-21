@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Card } from "../../components/ui/Card";
 import { Button } from "../../components/ui/Button";
 import { State, KanbanCard, InternshipMatch } from "../../types";
+import { VerifiedBadge } from "../../components/verification/VerifiedBadge";
 import { 
   Plus, Sparkles, CheckCircle2, Circle, Trophy, Calendar, 
   MessageSquare, ChevronLeft, ChevronRight, TrendingUp, BarChart4, PieChart, Users, AlertCircle, Activity
@@ -156,7 +157,10 @@ export const StudentDashboard: React.FC<StudentDashboardProps> = ({
           <Card variant="glass" className="flex flex-col justify-between">
             <div className="flex justify-between items-center mb-4">
               <h3 className="font-accent text-sm font-semibold tracking-wide uppercase text-caramel-400">Profile Completion</h3>
-              <span className="text-[10px] bg-wine-red/50 text-wool-100 font-bold px-2 py-0.5 rounded font-mono">Alex Rivera</span>
+              <div className="flex items-center gap-1.5">
+                <VerifiedBadge type="student" className="scale-90" />
+                <span className="text-[10px] bg-wine-red/50 text-wool-100 font-bold px-2 py-0.5 rounded font-mono">Alex Rivera</span>
+              </div>
             </div>
 
             <div className="flex items-center gap-6 py-1">

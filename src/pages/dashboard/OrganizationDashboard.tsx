@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Card } from "../../components/ui/Card";
 import { Button } from "../../components/ui/Button";
 import { State, Course, Internship, Problem } from "../../types";
+import { VerifiedBadge } from "../../components/verification/VerifiedBadge";
 import { 
   Building2, Users, Trophy, Send, CheckCircle, XCircle, Search, 
   MapPin, DollarSign, Globe, Plus, LineChart, Award, FileText, Check, 
@@ -398,6 +399,9 @@ export const OrganizationDashboard: React.FC<OrganizationDashboardProps> = ({
             {orgProfile.organization_name.charAt(0)}
           </div>
           <h3 className="font-display font-medium text-sm text-chestnut tracking-wide leading-tight px-1 uppercase">{orgProfile.organization_name}</h3>
+          <div className="mt-1.5 mb-0.5">
+            <VerifiedBadge type="organization" />
+          </div>
           <p className="text-[10px] text-gray-500 font-mono mt-1 font-semibold">{orgProfile.industry}</p>
           <p className="text-xs text-[#594440] font-light leading-relaxed mt-3.5 select-text">
             "{orgProfile.description}"
@@ -1262,7 +1266,10 @@ export const OrganizationDashboard: React.FC<OrganizationDashboardProps> = ({
                   <div key={st.name} className="p-4 bg-[#F7F4F2] border border-[#E7DDD7] rounded-xl hover:border-caramel hover:shadow-md transition text-left flex flex-col justify-between">
                     <div>
                       <div className="flex justify-between items-start mb-2">
-                        <h4 className="font-bold text-[#741717] text-sm truncate max-w-[130px]">{st.name}</h4>
+                        <div className="flex items-center gap-1.5 min-w-0">
+                          <h4 className="font-bold text-[#741717] text-sm truncate max-w-[110px]">{st.name}</h4>
+                          <VerifiedBadge type="student" className="scale-90 origin-left" />
+                        </div>
                         <span className="bg-emerald-50 text-emerald-800 text-[9px] font-mono font-bold px-2 py-0.5 rounded border border-emerald-100">
                           TRUST SCORE: {st.trust}
                         </span>
@@ -1383,7 +1390,10 @@ export const OrganizationDashboard: React.FC<OrganizationDashboardProps> = ({
                         </span>
                         <span className="text-[10px] text-gray-400 font-mono">TS: {orgProfile.trust_score}</span>
                       </div>
-                      <h3 className="font-display font-bold text-xl text-[#741717] mb-1.5">{editName}</h3>
+                      <div className="flex items-center gap-2 mb-1.5">
+                        <h3 className="font-display font-bold text-xl text-[#741717]">{editName}</h3>
+                        <VerifiedBadge type="organization" />
+                      </div>
                       <p className="text-xs text-[#594440] leading-relaxed select-text font-light mb-4">"{editDesc}"</p>
                       
                       <div className="border-t border-[#E7DDD7]/60 pt-3 flex items-center justify-between text-[10px] text-gray-500 font-medium">

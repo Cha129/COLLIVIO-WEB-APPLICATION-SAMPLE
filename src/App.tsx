@@ -11,11 +11,15 @@ import { StudentDashboard } from "./pages/dashboard/StudentDashboard";
 import { OrganizationDashboard } from "./pages/dashboard/OrganizationDashboard";
 import { AdminDashboard } from "./pages/dashboard/AdminDashboard";
 import { WaitingExperience } from "./pages/auth/WaitingExperience";
+import IdentityVerification from "./pages/auth/IdentityVerification";
+import OrgIdentityVerification from "./pages/auth/OrgIdentityVerification";
+import AdminActivation from "./pages/auth/AdminActivation";
 import { TeamWorkspace } from "./pages/dashboard/TeamWorkspace";
 import { ResearchHub } from "./pages/dashboard/ResearchHub";
 import { MediaLab } from "./pages/dashboard/MediaLab";
 import { EmploymentSkillBridge } from "./pages/dashboard/EmploymentSkillBridge";
 import { CollivioBot } from "./components/CollivioBot";
+import { VerifiedBadge } from "./components/verification/VerifiedBadge";
 import { CollivioLogo } from "./components/CollivioLogo";
 
 // Icons and UI Components
@@ -31,6 +35,7 @@ export default function App() {
   const [userName, setUserName] = useState<string>("Alex Rivera");
   const [userId, setUserId] = useState<string>("user-student-1");
   const [userStatus, setUserStatus] = useState<string>("ACTIVE");
+  const [activationToken, setActivationToken] = useState<string>("");
   
   // Notification items
   const [showBellDropdown, setShowBellDropdown] = useState(false);
@@ -55,6 +60,37 @@ export default function App() {
 
   useEffect(() => {
     fetchState();
+    const params = new URLSearchParams(window.location.search);
+    const token = params.get("activationToken") || params.get("inviteToken") || params.get("token");
+    if (token) {
+      setActivationToken(token);
+      setCurrentView("admin-activation");
+    }
+  }, []);
+
+  // Bridge custom navigation & verification events for IdentityVerification compatibility
+  useEffect(() => {
+    const handleNavigate = (e: Event) => {
+      const detail = (e as CustomEvent).detail;
+      if (
+        detail.path === '/verification-waiting' || 
+        detail.path === '/org-verification-waiting' || 
+        detail.path === 'waiting'
+      ) {
+        setCurrentView("waiting");
+      }
+    };
+    
+    const handleVerificationCompleted = () => {
+      fetchState();
+    };
+
+    window.addEventListener("app-navigate", handleNavigate);
+    window.addEventListener("verification-completed", handleVerificationCompleted);
+    return () => {
+      window.removeEventListener("app-navigate", handleNavigate);
+      window.removeEventListener("verification-completed", handleVerificationCompleted);
+    };
   }, []);
 
   useEffect(() => {
@@ -231,48 +267,81 @@ export default function App() {
         />
       )}
 
-      {/* ── WAITING EXPERIENCE GATE ── */}
-      {currentView === "waiting" && (
-        <WaitingExperience 
-          userId={userId}
-          userRole={userRole}
-          status={userStatus as any}
-          profileName={userName}
-          trustScore={userRole === "student" ? (state?.student_profiles?.[userId]?.trust_score || 70) : (state?.organization_profiles?.[userId]?.trust_score || 75)}
-          auditLogs={state?.audit_logs || []}
-          onRefreshStatus={async () => {
-            try {
-              const res = await fetch("/api/state");
-              const data = await res.json();
-              setState(data);
-              const userObj = data.users.find((u: any) => u.id === userId);
-              if (userObj) {
-                setUserStatus(userObj.status);
-                if (userObj.status === "ACTIVE") {
-                  setCurrentView("dashboard");
-                }
-              }
-            } catch (err) {
-              console.error("Status update sync error:", err);
-            }
+      {/* ── SECURE FOUNDER ACTIVATION PAGE ── */}
+      {currentView === "admin-activation" && (
+        <AdminActivation 
+          token={activationToken}
+          onActivationSuccess={(role, email, userId, profile, status, jwtToken) => {
+            localStorage.setItem("token", jwtToken);
+            setUserRole("admin");
+            setUserName(profile.full_name);
+            setUserId(userId);
+            setUserStatus("ACTIVE");
+            setCurrentView("dashboard");
+            fetchState();
           }}
-          onApproveInstant={async () => {
-            try {
-              const res = await fetch("/api/auth/approve-backdoor", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ userId })
-              });
-              if (res.ok) {
-                setUserStatus("ACTIVE");
-                setCurrentView("dashboard");
-                fetchState();
-              }
-            } catch (err) {
-              console.error("Backdoor approval failed:", err);
-            }
+          onCancel={() => {
+            const url = new URL(window.location.href);
+            url.searchParams.delete("activationToken");
+            url.searchParams.delete("inviteToken");
+            url.searchParams.delete("token");
+            window.history.replaceState({}, "", url.pathname);
+            setActivationToken("");
+            setCurrentView("landing");
           }}
         />
+      )}
+
+      {/* ── WAITING EXPERIENCE GATE ── */}
+      {currentView === "waiting" && (
+        userStatus === "IDENTITY_PENDING" ? (
+          userRole === "organization" ? (
+            <OrgIdentityVerification />
+          ) : (
+            <IdentityVerification />
+          )
+        ) : (
+          <WaitingExperience 
+            userId={userId}
+            userRole={userRole}
+            status={userStatus as any}
+            profileName={userName}
+            trustScore={userRole === "student" ? (state?.student_profiles?.[userId]?.trust_score || 70) : (state?.organization_profiles?.[userId]?.trust_score || 75)}
+            auditLogs={state?.audit_logs || []}
+            onRefreshStatus={async () => {
+              try {
+                const res = await fetch("/api/state");
+                const data = await res.json();
+                setState(data);
+                const userObj = data.users.find((u: any) => u.id === userId);
+                if (userObj) {
+                  setUserStatus(userObj.status);
+                  if (userObj.status === "ACTIVE") {
+                    setCurrentView("dashboard");
+                  }
+                }
+              } catch (err) {
+                console.error("Status update sync error:", err);
+              }
+            }}
+            onApproveInstant={async () => {
+              try {
+                const res = await fetch("/api/auth/approve-backdoor", {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({ userId })
+                });
+                if (res.ok) {
+                  setUserStatus("ACTIVE");
+                  setCurrentView("dashboard");
+                  fetchState();
+                }
+              } catch (err) {
+                console.error("Backdoor approval failed:", err);
+              }
+            }}
+          />
+        )
       )}
 
       {/* ── MASTER COCKPIT LAYOUT WITH INNER ROUTING ── */}
@@ -325,11 +394,16 @@ export default function App() {
                 <div className="w-8 h-8 rounded-full bg-[#8D695D] text-white flex items-center justify-center font-bold text-xs">
                   {userName[0]}
                 </div>
-                <div className="min-w-0 text-left">
+                <div className="min-w-0 text-left flex flex-col gap-1.5 justify-center">
                   <p className="font-semibold text-xs leading-none text-chestnut truncate">{userName}</p>
-                  <span className="text-[8px] uppercase tracking-wider text-caramel font-mono mt-1 font-bold inline-block leading-none">
-                    {userRole === "student" ? "Ambitious Scholar" : userRole}
-                  </span>
+                  <div className="flex flex-col gap-1 items-start">
+                    <span className="text-[8px] uppercase tracking-wider text-caramel font-mono font-bold inline-block leading-none">
+                      {userRole === "student" ? "Ambitious Scholar" : userRole}
+                    </span>
+                    {(userRole === "student" || userRole === "organization") && (
+                      <VerifiedBadge type={userRole} className="scale-75 origin-left" />
+                    )}
+                  </div>
                 </div>
                 <ChevronDown size={11} className="ml-auto text-gray-400" />
                 
