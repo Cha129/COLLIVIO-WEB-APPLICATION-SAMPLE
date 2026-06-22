@@ -10,7 +10,7 @@ import { DbRepo } from "./src/lib/db-repo.ts";
 import { adminDb, adminAuth } from "./src/lib/firebase-admin.ts";
 
 const app = express();
-const PORT = 3000;
+const PORT = Number(process.env.PORT) || 3000;
 const STATE_FILE = path.join(process.cwd(), "data-state.json");
 
 app.use(express.json({ limit: "15mb" }));
